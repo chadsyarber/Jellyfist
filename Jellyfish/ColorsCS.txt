@@ -1,0 +1,227 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Jellyfish5._1
+{
+    public partial class Colors : Form
+    {
+        private List<Color> priColor = new List<Color>();
+        private List<Color> secColor = new List<Color>();
+
+        public Colors()
+        {
+            InitializeComponent();
+            setColorLists();
+            button1_Load();
+            button2_Load();
+            button3_Load();
+            button4_Load();
+            button5_Load();
+            button6_Load();
+            button7_Load();
+            button8_Load();
+            button9_Load();
+            button10_Load();
+        }
+        private void setColorLists()
+        {
+            priColor.Add(Color.Olive);//0
+            priColor.Add(Color.DarkTurquoise);//1
+            priColor.Add(Color.Black);//2
+            priColor.Add(Color.SteelBlue);//3
+            priColor.Add(Color.DarkRed);//4
+            priColor.Add(Color.BlueViolet);//5
+            priColor.Add(Color.Green);//6
+            priColor.Add(Color.HotPink);//7
+            priColor.Add(Color.LightSteelBlue);//8
+            priColor.Add(Color.MediumOrchid);//9
+            secColor.Add(Color.Orchid);//0
+            secColor.Add(Color.MidnightBlue);//1
+            secColor.Add(Color.WhiteSmoke);//2
+            secColor.Add(Color.SandyBrown);//3
+            secColor.Add(Color.NavajoWhite);//4
+            secColor.Add(Color.Black);//5
+            secColor.Add(Color.LimeGreen);//6
+            secColor.Add(Color.Firebrick);//7
+        }
+        private void button1_paint(object sender, PaintEventArgs pe)
+        {
+            using (LinearGradientBrush brush = new LinearGradientBrush(this.button1.ClientRectangle, priColor.ElementAt(0), secColor.ElementAt(0), 90F))
+            {
+                pe.Graphics.FillRectangle(brush, this.button1.ClientRectangle);
+            }
+        }
+        private void button1_Load()
+        {
+            this.button1.Paint += new PaintEventHandler(this.button1_paint);
+            this.button1.Invalidate();
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Jellies parent = (Jellies)this.Owner;
+            parent.setColors(priColor.ElementAt(0), secColor.ElementAt(0));
+        }
+        private void button2_paint(object sender, PaintEventArgs pe)
+        {
+            using (LinearGradientBrush brush = new LinearGradientBrush(this.button2.ClientRectangle, priColor.ElementAt(1), secColor.ElementAt(1), 90F))
+            {
+                pe.Graphics.FillRectangle(brush, this.button2.ClientRectangle);
+            }
+        }
+        private void button2_Load()
+        {
+            this.button2.Paint += new PaintEventHandler(this.button2_paint);
+            this.button2.Invalidate();
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Jellies parent = (Jellies)this.Owner;
+            parent.setColors(priColor.ElementAt(1), secColor.ElementAt(1));
+        }
+        private void button3_paint(object sender, PaintEventArgs pe)
+        {
+            using (LinearGradientBrush brush = new LinearGradientBrush(this.button3.ClientRectangle, priColor.ElementAt(2), secColor.ElementAt(2), 90F))
+            {
+                pe.Graphics.FillRectangle(brush, this.button3.ClientRectangle);
+            }
+        }
+        private void button3_Load()
+        {
+            this.button3.Paint += new PaintEventHandler(this.button3_paint);
+            this.button3.Invalidate();
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Jellies parent = (Jellies)this.Owner;
+            parent.setColors(priColor.ElementAt(2), secColor.ElementAt(2));
+        }
+        private void button4_paint(object sender, PaintEventArgs pe)
+        {
+            using (LinearGradientBrush brush = new LinearGradientBrush(this.button4.ClientRectangle, priColor.ElementAt(3), secColor.ElementAt(3), 90F))
+            {
+                pe.Graphics.FillRectangle(brush, this.button4.ClientRectangle);
+            }
+        }
+        private void button4_Load()
+        {
+            this.button4.Paint += new PaintEventHandler(this.button4_paint);
+            this.button4.Invalidate();
+        }
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Jellies parent = (Jellies)this.Owner;
+            parent.setColors(priColor.ElementAt(3), secColor.ElementAt(3));
+        }
+        private void button5_paint(object sender, PaintEventArgs pe)
+        {
+            using (LinearGradientBrush brush = new LinearGradientBrush(this.button5.ClientRectangle, priColor.ElementAt(4), secColor.ElementAt(4), 90F))
+            {
+                pe.Graphics.FillRectangle(brush, this.button5.ClientRectangle);
+            }
+        }
+        private void button5_Load()
+        {
+            this.button5.Paint += new PaintEventHandler(this.button5_paint);
+            this.button5.Invalidate();
+        }
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Jellies parent = (Jellies)this.Owner;
+            parent.setColors(priColor.ElementAt(4), secColor.ElementAt(4));
+        }
+        private void button6_paint(object sender, PaintEventArgs pe)
+        {
+            using (LinearGradientBrush brush = new LinearGradientBrush(this.button6.ClientRectangle, priColor.ElementAt(5), secColor.ElementAt(5), 90F))
+            {
+                pe.Graphics.FillRectangle(brush, this.button6.ClientRectangle);
+            }
+        }
+        private void button6_Load()
+        {
+            this.button6.Paint += new PaintEventHandler(this.button6_paint);
+            this.button6.Invalidate();
+        }
+        private void button6_Click(object sender, EventArgs e)
+        {
+            Jellies parent = (Jellies)this.Owner;
+            parent.setColors(priColor.ElementAt(5), secColor.ElementAt(5));
+        }
+        private void button7_paint(object sender, PaintEventArgs pe)
+        {
+            using (LinearGradientBrush brush = new LinearGradientBrush(this.button7.ClientRectangle, priColor.ElementAt(6), secColor.ElementAt(5), 90F))
+            {
+                pe.Graphics.FillRectangle(brush, this.button7.ClientRectangle);
+            }
+        }
+        private void button7_Load()
+        {
+            this.button7.Paint += new PaintEventHandler(this.button7_paint);
+            this.button7.Invalidate();
+        }
+        private void button7_Click(object sender, EventArgs e)
+        {
+            Jellies parent = (Jellies)this.Owner;
+            parent.setColors(priColor.ElementAt(6), secColor.ElementAt(5));
+        }
+        private void button8_paint(object sender, PaintEventArgs pe)
+        {
+            using (LinearGradientBrush brush = new LinearGradientBrush(this.button8.ClientRectangle, priColor.ElementAt(7), secColor.ElementAt(5), 90F))
+            {
+                pe.Graphics.FillRectangle(brush, this.button8.ClientRectangle);
+            }
+        }
+        private void button8_Load()
+        {
+            this.button8.Paint += new PaintEventHandler(this.button8_paint);
+            this.button8.Invalidate();
+        }
+        private void button8_Click(object sender, EventArgs e)
+        {
+            Jellies parent = (Jellies)this.Owner;
+            parent.setColors(priColor.ElementAt(7), secColor.ElementAt(5));
+        }
+        private void button9_Load()
+        {
+            this.button9.Paint += new PaintEventHandler(this.button9_paint);
+            this.button9.Invalidate();
+        }
+        private void button9_paint(object sender, PaintEventArgs pe)
+        {
+            using (LinearGradientBrush brush = new LinearGradientBrush(this.button9.ClientRectangle, priColor.ElementAt(8), secColor.ElementAt(6), 90F))
+            {
+                pe.Graphics.FillRectangle(brush, this.button9.ClientRectangle);
+            }
+        }
+        private void button9_Click(object sender, EventArgs e)
+        {
+            Jellies parent = (Jellies)this.Owner;
+            parent.setColors(priColor.ElementAt(8), secColor.ElementAt(6));
+        }
+        private void button10_paint(object sender, PaintEventArgs pe)
+        {
+            using (LinearGradientBrush brush = new LinearGradientBrush(this.button10.ClientRectangle, priColor.ElementAt(2), secColor.ElementAt(7), 90F))
+            {
+                pe.Graphics.FillRectangle(brush, this.button10.ClientRectangle);
+            }
+        }
+        private void button10_Load()
+        {
+            this.button10.Paint += new PaintEventHandler(this.button10_paint);
+            this.button10.Invalidate();
+        }
+        private void button10_Click(object sender, EventArgs e)
+        {
+            Jellies parent = (Jellies)this.Owner;
+            parent.setColors(priColor.ElementAt(2), secColor.ElementAt(7));
+        }
+        
+    }
+}

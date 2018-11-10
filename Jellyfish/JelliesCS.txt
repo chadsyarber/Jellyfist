@@ -1,0 +1,405 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Jellyfish5._1
+{
+    public partial class Jellies : Form
+    {
+        private System.Drawing.Color gColor1;
+        private System.Drawing.Color gColor2;
+        private PostToHipChat pthc;        
+        private JellyfishStatusUpdate jellyfish;
+        private isResolved rese;
+        private fullUpdateType update;
+        private location local;
+                
+        public Jellies()
+        {
+            InitializeComponent();
+            comboBox1_Load();
+            comboBox1.SelectedIndex = -1;
+            Rese = isResolved.STATUS;
+            update = fullUpdateType.NONE;
+            local = location.NONE;
+            this.ResizeRedraw = true;
+        }
+        private isResolved Rese
+        {
+            get { return rese; }
+            set { rese = value; }
+        }
+        
+        private void comboBox1_Load()
+        {
+            pthc = new PostToHipChat();
+            foreach (string rooms in pthc.RoomName)
+            {
+                comboBox1.Items.Add(rooms);
+            }
+        }
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            pthc.setRID(comboBox1.Text);
+            comboBox1.Enabled = false;
+            textBox1.Text = comboBox1.Text.Replace("*", "").Replace("\\", "-");           
+            
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            comboBox1.Items.Clear();
+            comboBox1_Load();
+            comboBox1.Enabled = true;
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            textBox1.Text = "";
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //Post Event
+            update = fullUpdateType.NONE;
+            local = location.INC_TITLE;
+            cleanedJelly();
+            jellyfish.FullUpdateType = update;
+            jellyfish.Local = local;
+            jellyfish.Reso = Rese;
+            sendToHipChat();            
+        }
+        private void button4_Click(object sender, EventArgs e)
+        {
+            textBox2.Text = "";
+        }
+        private void button5_Click(object sender, EventArgs e)
+        {
+            spellBox1.Text = "";
+        }
+        private void button6_Click(object sender, EventArgs e)
+        {
+            //Post Event
+            update = fullUpdateType.NONE;
+            local = location.CUR_STATUS;
+            cleanedJelly();
+            jellyfish.FullUpdateType = update;
+            jellyfish.Local = local;
+            jellyfish.Reso = Rese;            
+            sendToHipChat();            
+        }
+        private void button7_Click(object sender, EventArgs e)
+        {
+            spellBox5.Text = "";
+        }
+        private void button8_Click(object sender, EventArgs e)
+        {
+            //Post Event
+            update = fullUpdateType.NONE;
+            local = location.INACTIVE_STREAMS;
+            cleanedJelly();//Set the Jellyfish Object
+            jellyfish.FullUpdateType = update;
+            jellyfish.Local = local;
+            jellyfish.Reso = Rese;
+            sendToHipChat();
+            
+        }
+        private void button9_Click(object sender, EventArgs e)
+        {
+            spellBox2.Text = "";
+        }
+        private void button10_Click(object sender, EventArgs e)
+        {
+            //Post Event
+            update = fullUpdateType.NONE;
+            local = location.BUS_IMPACT;
+            cleanedJelly();
+            jellyfish.FullUpdateType = update;
+            jellyfish.Local = local;
+            jellyfish.Reso = Rese;
+            sendToHipChat();
+            
+        }
+        private void button11_Click(object sender, EventArgs e)
+        {
+            textBox3.Text = "";
+        }
+        private void button12_Click(object sender, EventArgs e)
+        {
+            //Post Event
+            update = fullUpdateType.NONE;
+            local = location.SAND_BOX;
+            cleanedJelly();
+            jellyfish.FullUpdateType = update;
+            jellyfish.Local = local;
+            jellyfish.SandBox = theCleaner(textBox3.Text);
+            sendToHipChat();
+            
+        }
+        private void button13_Click(object sender, EventArgs e)
+        {
+            spellBox3.Text = "";
+        }
+        private void button14_Click(object sender, EventArgs e)
+        {
+            //Post Event
+            update = fullUpdateType.NONE;
+            local = location.TECH_IMPACT;
+            cleanedJelly();
+            jellyfish.FullUpdateType = update;
+            jellyfish.Local = local;
+            jellyfish.Reso = Rese;
+            sendToHipChat();
+            
+        }
+        private void button15_Click(object sender, EventArgs e)
+        {
+            if (comboBox1.SelectedIndex <= -1)
+            {
+                MessageBox.Show("Please choose a room!");
+            }
+            else
+            {
+                using (BabyJellies babies = new BabyJellies(comboBox1.Text))
+                {
+                    babies.ShowDialog(this);
+                }
+            }
+        }
+        private void button16_Click(object sender, EventArgs e)
+        {
+            //Post Jelly Status Event
+            update = fullUpdateType.STATUS;
+            local = location.NONE;
+            cleanedJelly();
+            jellyfish.FullUpdateType = update;
+            jellyfish.Local = local;
+            jellyfish.Reso = Rese;
+            sendToHipChat();
+
+        }
+        private void button17_Click(object sender, EventArgs e)
+        {
+            spellBox4.Text = "";
+        }
+        private void button18_Click(object sender, EventArgs e)
+        {
+            //Post Event
+            update = fullUpdateType.NONE;
+            local = location.ACTIVE_STREAMS;
+            cleanedJelly();
+            jellyfish.FullUpdateType = update;
+            jellyfish.Local = local;
+            jellyfish.Reso = Rese;            
+            sendToHipChat();
+        }
+        private void button19_Click(object sender, EventArgs e)
+        {
+            //Post Workstreams Event
+            update = fullUpdateType.WORKSTREAMS;
+            local = location.NONE;
+            cleanedJelly();
+            jellyfish.FullUpdateType = update;
+            jellyfish.Local = local;
+            jellyfish.Reso = Rese;
+            sendToHipChat();
+            
+        }
+        private void button20_Click(object sender, EventArgs e)
+        {
+            //Post Status and Streams
+            update = fullUpdateType.BOTH;
+            local = location.NONE;
+            cleanedJelly();
+            jellyfish.FullUpdateType = update;
+            jellyfish.Local = local;
+            jellyfish.Reso = Rese;
+            sendToHipChat();
+            
+        }
+        private void checkBox1_isChecked(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked)
+            {
+                Rese = isResolved.FINAL;
+                checkBox2.Checked = false;
+            }
+            else
+            {
+                if (!(checkBox2.Checked))
+                {
+                    Rese = isResolved.STATUS;
+                }
+            }
+        }
+        private void checkBox2_isChecked(object sender, EventArgs e)
+        {
+            if (checkBox2.Checked)
+            {
+                Rese = isResolved.RESOLVED;
+                checkBox1.Checked = false;
+            }
+            else
+            {
+                if (!(checkBox1.Checked))
+                {
+                    Rese = isResolved.STATUS;
+                }
+            }
+        } 
+        private void pictureBox1_Click(object sender, EventArgs e)//New form with color selectors
+        {
+            using (Colors change = new Colors())
+            {
+                change.ShowDialog(this);
+            }
+        }
+        public void setColors(System.Drawing.Color color1, System.Drawing.Color color2)
+        {
+            this.gColor1 = color1;
+            this.gColor2 = color2;
+            this.Paint += new PaintEventHandler(this.Form1_Paint);
+            this.Invalidate();
+        }
+        private void Form1_Paint(object sender, PaintEventArgs e)
+        {
+            try
+            {
+                using (LinearGradientBrush brush = new LinearGradientBrush(this.ClientRectangle, gColor1, gColor2, 90F))
+                {
+                    e.Graphics.FillRectangle(brush, this.ClientRectangle);
+                }
+            }
+            catch (System.ArgumentException)
+            {
+                this.ClientSize = this.Size;
+            }
+        }
+        
+        /*sendToHipChat(string, string)
+         * Called by the Post buttons on the form
+         * 
+         * */
+        private void sendToHipChat()
+        {
+            if (comboBox1.SelectedIndex == -1)
+            {
+                MessageBox.Show("Please Choose a room!");
+            }
+            else
+            {
+                try
+                {
+                    using (var client = new WebClient())
+                    {
+                        client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                        client.Headers.Add(HttpRequestHeader.Accept, "application/html");
+                        client.UploadString(new Uri(pthc.postURL()), "POST", jellyfish.ToString());
+                    }
+                }
+                catch (WebException we)
+                {
+                    Clipboard.SetText(jellyfish.errorString()
+                        .Replace("<b>", "")
+                        .Replace("</b>", "")
+                        .Replace("<br>", "")
+                        .Replace("</br>", ""));
+                    MessageBox.Show(we.Message + " Your update has been placed on the Clipboard, post into HipChat");
+                }
+            }
+        }
+        /*cleanedJelly()
+         * Generates a cleaned and scrubbed jellyfish update
+         * The input from users is passed through:
+         *  theScrubber and
+         *  theCleaner
+         * After it is cleaned of all characters that would break the JSON string it is used to generate 
+         * the JellyfishStatusUpdate class.
+         * */
+        private void cleanedJelly()
+        {
+            string title, engaged, status, bImpact, tImpact, aWork, cWork;
+            title = theCleaner(theScrubber(textBox1.Text));
+            engaged = theCleaner(theScrubber(textBox2.Text));
+            status = theCleaner(theScrubber(spellBox1.Text));
+            bImpact = theCleaner(theScrubber(spellBox2.Text));
+            tImpact = theCleaner(theScrubber(spellBox3.Text));
+            aWork = theCleaner(theScrubber(spellBox4.Text));
+            cWork = theCleaner(theScrubber(spellBox5.Text));            
+
+            jellyfish = new JellyfishStatusUpdate(title, engaged, status, bImpact, tImpact, aWork, cWork);            
+            
+        }
+        /*theCleaner(string)
+         * The Cleaner
+         * parameters: text - cleaned information from theScrubber
+         * returns further cleaned text 
+         * This function removes Microsoft formatted special characters: end-of-line, tabs, smart quotes, backslash
+         * and replaces them with either plain text versions, html versions or empty spaces
+         * If users are getting 400 responses from HipChat: theCleaner and theScrubber are the 
+         * first functions to check. Additional information will be in ServiceNow 
+         * */
+        private string theCleaner(string text)
+        {
+            if (text.Equals(String.Empty) || text.Equals(null))
+            {
+                return "";
+            }
+            else
+            {
+                return text.Replace('\u2018', '\'')
+                    .Replace('\u2019', '\'')
+                    .Replace('\u201c', '"')
+                    .Replace('\u201d', '"')
+                    .Replace('\u0009', ' ')
+                    .Replace("\r\n", "<br>")
+                    .Replace("\n", "<br>")
+                    .Replace("\r", "<br>")
+                    .Replace('\u005C', '\\')
+                    .Replace('\u00E7', 'c')
+                    .Replace('\u00C7', 'C')
+                    .Replace("\\", "\\\\")
+                    .Replace("  ", " ")
+                    .Replace("\t", " ")
+                    .Replace("\"", "\\\"")
+                    .TrimEnd()
+                    .TrimStart()
+                    .Normalize();
+            }
+        }
+        /*theScrubber(string)
+         * The Scrubber
+         * parameters: toughGreese - Text information from the Jellyfish form
+         * returns: Only valid alpha-numeric characters that can pass through the Json string when sending to hipchat
+         * Valid characters that pass through the regex are:
+         * : ; ~ ! @ # $ % ^ & * ( ) _ + = - [ ] " ' | \ < , > . ? A-Z a-z 0-9
+         * Nearly all other characters will be replaced with a \ 
+         * This works in tandem with The Cleaner
+         * Currently I am not concerned with special ALT characters such as:
+         * ALT+163, ALT+164 and so on. These characters should never be passed through Jellyfish
+         * The number one cause for HipChat to throw a 400 is an illegal character that interrupts the JSON string.
+         * Word of Advice: 
+         *  I recommend reading heavily on creating valid Json as nearly all the tools that interface with HipChat use JSON strings
+         *  
+         * */
+        private string theScrubber(string toughGreese)
+        {
+            if (toughGreese.Equals(String.Empty) || toughGreese.Equals(null))
+            {
+                return "";
+            }
+            else
+            {
+                return Regex.Replace(toughGreese, "[^\\\"\\s%#$\\^&?!*()<>:;\\|/,~+=[]_\\u2019\\u201c\\u201d\u2018\\w\\.@-]", "\\\\");
+            }
+        }
+        
+    }
+}

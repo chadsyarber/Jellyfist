@@ -1,0 +1,67 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Net;
+
+namespace Jellyfish5._1
+{
+    public partial class BabyJellies : Form
+    {
+        private Roles roles;
+        private PostToHipChat post;
+        private string roomName;
+
+        public BabyJellies(string roomName)
+        {
+            this.roomName = roomName;
+            InitializeComponent();
+        }        
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (checkRoles())
+            {
+                roles = new Roles(comboBox1.Text, comboBox2.Text, comboBox3.Text, comboBox4.Text);
+                //Hipchat here
+
+                post = new PostToHipChat(roles);
+                post.setRID(roomName);
+                try
+                {
+                    using (var client = new WebClient())
+                    {
+                        client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                        client.Headers.Add(HttpRequestHeader.Accept, "application/html");
+                        client.UploadString(new Uri(post.postURL()), "POST", roles.ToString());
+                    }
+                }
+                catch (System.Net.WebException we)
+                {
+                    Clipboard.SetText(roles.getRoles());
+                    MessageBox.Show("Role posting has been placed on the Clipboard, paste into HipChat");
+                }
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Please assign all the roles!");
+            }
+        }
+        private bool checkRoles()
+        {
+            if (comboBox1.Text == "" || comboBox2.Text == "" || comboBox3.Text == "" || comboBox4.Text == "")
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
+}

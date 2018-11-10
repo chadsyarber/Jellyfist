@@ -1,0 +1,72 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Jellyfish5._1
+{
+    class Roles
+    {
+        private string nameCordRole;
+        private string nameEscaRole;
+        private string nameCommRole;
+        private string nameDSamRole;
+
+        public Roles(string cord, string esca, string comm, string dSam)
+        {
+            nameCordRole = cord;            
+            nameEscaRole = esca;            
+            nameCommRole = comm;            
+            nameDSamRole = dSam;
+            
+        }
+        public string NameCordRole
+        {
+            get { return nameCordRole; }
+            set { nameCordRole = value; }
+        }
+        public string NameEscaRole
+        {
+            get { return nameEscaRole; }
+            set { nameEscaRole = value; }
+
+        }
+        public string NameCommRole
+        {
+            get { return nameCommRole; }
+            set { nameCommRole = value; }
+        }
+        public string NameDSamRole
+        {
+            get { return nameDSamRole; }
+            set { nameDSamRole = value; }
+        }
+        private string genJson(string kpi)
+        {
+            return "{\"message_format\":\"html\","
+                + "\"message\":\"" + kpi + "\"}";
+        }
+        private string genKpi()
+        {
+            return "Current DTOC Roles<br><b>COORDINATOR:</b> " + NameCordRole
+            + "<br><b>ESCALATOR:</b> " + NameEscaRole
+            + "<br><b>COMMUNICATOR:</b> " + NameCommRole
+            + "<br><b>DTOC SAM:</b> " + NameDSamRole;
+        }
+        public override string ToString()
+        {
+            return genJson(genKpi());        
+        }
+        public string getRoles()
+        {
+            StringBuilder theRoles = new StringBuilder();
+            theRoles.AppendLine("Current DTOC Roles");
+            theRoles.AppendLine("COORDINATOR: " + NameCordRole);
+            theRoles.AppendLine("ESCALATOR: " + NameEscaRole);
+            theRoles.AppendLine("COMMUNICATOR: " + NameCommRole);
+            theRoles.AppendLine("DTOC SAM: " + NameDSamRole);
+            return theRoles.ToString();
+        }
+    }
+}

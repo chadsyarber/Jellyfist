@@ -1,0 +1,242 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Jellyfish5._1
+{
+    class JellyfishStatusUpdate 
+    {
+        private fullUpdateType type;
+        private location local;
+        private isResolved reso;
+        
+        private string incTitle;
+        private string teamsEngaged;
+        private string currStatus;
+        private string busiImpact;
+        private string techImpact;
+        private string actWork;
+        private string comWork;
+        private string sandBox;
+        
+
+        public JellyfishStatusUpdate(string incTitle, string teamsEngaged, string currStatus, string busiImpact, string techImpact, string actWork, string comWork)
+        {
+            
+            type = fullUpdateType.NONE;
+            local = location.NONE;
+            reso = isResolved.STATUS;
+            this.incTitle = incTitle;
+            this.teamsEngaged = teamsEngaged;
+            this.currStatus = currStatus;
+            this.busiImpact = busiImpact;
+            this.techImpact = techImpact;
+            this.actWork = actWork;
+            this.comWork = comWork;
+            sandBox = "";
+        }
+        public fullUpdateType FullUpdateType
+        {
+            get { return type; }
+            set { type = value; }
+        }
+        public location Local
+        {
+            get { return local; }
+            set { local = value; }
+        }
+        public isResolved Reso
+        {
+            get { return reso; }
+            set { reso = value; }
+        }
+        
+        public string IncTitle
+        {
+            get { return incTitle; }
+            set { incTitle = value; }
+        }
+        public string TeamsEngaged
+        {
+            get { return teamsEngaged; }
+            set { teamsEngaged = value; }
+        }
+        public string CurrStatus
+        {
+            get { return currStatus; }
+            set { currStatus = value; }
+        }
+        public string BusiImpact
+        {
+            get { return busiImpact; }
+            set { busiImpact = value; }
+        }
+        public string TechImpact
+        {
+            get { return techImpact; }
+            set { techImpact = value; }
+        }
+        public string ActWork
+        {
+            get { return actWork; }
+            set { actWork = value; }
+        }
+        public string ComWork
+        {
+            get { return comWork; }
+            set { comWork = value; }
+        }
+        public string SandBox
+        {
+            get { return sandBox; }
+            set { sandBox = value; }
+        }
+        /*
+         * Call in Form after constructor before hipchat
+         * */
+        
+        private string fixBrokeWorkaround()
+        {
+            string rtn = "";
+            switch (type)
+            {
+                case fullUpdateType.STATUS:
+                case fullUpdateType.BOTH:
+                    switch (reso)
+                    {
+                        case isResolved.FINAL:
+                            rtn = "<b>****FINAL STATUS UPDATE FOR: " + IncTitle + "****</b><br></br>";
+                            break;
+                        case isResolved.RESOLVED:
+                            rtn = "<b>****RESOLVED STATUS UPDATE FOR: " + IncTitle + "****</b><br></br>";
+                            break;
+                        case isResolved.STATUS:
+                            rtn = "<b>****STATUS UPDATE FOR: " + IncTitle + "****</b><br></br>";
+                            break;
+                    }
+                    break;
+                case fullUpdateType.WORKSTREAMS:
+                    switch (reso)
+                    {
+                        case isResolved.FINAL:
+                            rtn = "<b>***FINAL WORKSTREAMS FOR: " + IncTitle + "***</b><br></br>";
+                            break;
+                        case isResolved.RESOLVED:
+                            rtn = "<b>***RESOLVED WORKSTREAMS FOR: " + IncTitle + "***</b><br></br>";
+                            break;
+                        case isResolved.STATUS:
+                            rtn = "<b>***CURRENT WORKSTREAMS FOR: " + IncTitle + "***</b><br></br>";
+                            break;
+                    }
+                    break;
+            
+            }
+            return rtn;
+        }
+        private string indiUpdate()
+        {
+            string rtn = "";
+            switch(local)
+            {
+                case location.CUR_STATUS:
+                    rtn = "<b>**CURRENT STATUS FOR: " + IncTitle + "**</b><br></br>"
+                        + CurrStatus;
+                    break;
+                case location.BUS_IMPACT:
+                    rtn = "<b>**BUSINESS IMPACT FOR: " + IncTitle + "**</b><br></br>"
+                        + BusiImpact;
+                    break;
+                case location.TECH_IMPACT:
+                    rtn = "<b>**TECHNICAL IMPACT FOR: " + IncTitle + "**</b><br></br>"
+                        + TechImpact;
+                    break;
+                case location.ACTIVE_STREAMS:
+                    rtn = "<b>**ACTIVE WORKSTREAMS FOR: " + IncTitle + "**</b><br></br>"
+                        + ActWork;
+                    break;
+                case location.INACTIVE_STREAMS:
+                    rtn = "<b>**COMPLETED WORKSTREAMS FOR: " + IncTitle + "**</b><br></br>"
+                        + ComWork;
+                    break;
+                case location.SAND_BOX:
+                    rtn = "<b>**HELPFUL INFORMATION FOR: " + IncTitle + "**</b><br></br>"
+                        + SandBox;
+                    break;
+                case location.INC_TITLE:
+                    rtn = "<b>**" + IncTitle + "**</b>";
+                    break;
+            }
+            return rtn;
+        }
+        public override string ToString()
+        {
+            string rtn = "";
+            switch (type)
+            {
+                case fullUpdateType.STATUS:
+                    rtn = "{\"message_format\":\"html\","
+                        + "\"message\":\"" + fixBrokeWorkaround()
+                        + "<b>TEAMS ENGAGED: </b><br>" + TeamsEngaged + "<br></br>"
+                        + "<b>CURRENT STATUS: </b><br>" + CurrStatus + "<br></br>"
+                        + "<b>BUSINESS IMPACT: </b><br>" + BusiImpact + "<br></br>"
+                        + "<b>TECHNICAL IMPACT: </b><br>" + TechImpact + "<br></br>"
+                        + "\"}";
+                    break;
+                case fullUpdateType.WORKSTREAMS:
+                    rtn = "{\"message_format\":\"html\","
+                        + "\"message\":\"" + fixBrokeWorkaround()
+                        + "<b>TEAMS ENGAGED: </b><br>" + TeamsEngaged + "<br></br>"
+                        + "<b>ACTIVE WORKSTREAMS: </b><br>" + ActWork + "<br></br>"
+                        + "<b>COMPLETED WORKSTREAMS: </b><br>" + ComWork + "<br></br>"
+                        + "\"}";
+                    break;
+                case fullUpdateType.BOTH:
+                    rtn = "{\"message_format\":\"html\","
+                        + "\"message\":\"" + fixBrokeWorkaround()
+                        + "<b>TEAMS ENGAGED: </b><br>" + TeamsEngaged + "<br></br>"
+                        + "<b>CURRENT STATUS: </b><br>" + CurrStatus + "<br></br>"
+                        + "<b>BUSINESS IMPACT: </b><br>" + BusiImpact + "<br></br>"
+                        + "<b>TECHNICAL IMPACT: </b><br>" + TechImpact + "<br></br>"
+                        + "<b>ACTIVE WORKSTREAMS: </b><br>" + ActWork + "<br></br>"
+                        + "<b>COMPLETED WORKSTREAMS: </b><br>" + ComWork + "<br></br>"
+                        + "\"}";
+                    break;
+                default:
+                    rtn = "{\"message_format\":\"html\","
+                        + "\"message\":\"" + indiUpdate()
+                        + "\"}";
+                    break;
+            }
+            return rtn;            
+        }
+        public string errorString()
+        {
+            switch (type)
+            {
+                case fullUpdateType.STATUS:
+                    return fixBrokeWorkaround()
+                        + "\nTEAMS ENGAGED: \n" + TeamsEngaged
+                        + "\nCURRENT STATUS: \n" + CurrStatus
+                        + "\nBUSINESS IMPACT: \n" + BusiImpact
+                        + "\nTECHNICAL IMPACT: \n" + TechImpact;
+                case fullUpdateType.WORKSTREAMS:
+                    return fixBrokeWorkaround()
+                        + "\nTEAMS ENGAGED: \n" + TeamsEngaged
+                        + "\nACTIVE WORKSTREAMS: \n" + ActWork
+                        + "\nCOMPLETED WORKSTREAMS: \n" + ComWork;
+                case fullUpdateType.BOTH:
+                    return fixBrokeWorkaround()
+                        + "\nTEAMS ENGAGED: \n" + TeamsEngaged
+                        + "\nCURRENT STATUS: \n" + CurrStatus
+                        + "\nBUSINESS IMPACT: \n" + BusiImpact
+                        + "\nTECHNICAL IMPACT: \n" + TechImpact
+                        + "\nACTIVE WORKSTREAMS: \n" + ActWork
+                        + "\nCOMPLETED WORKSTREAMS: \n" + ComWork;
+                default:
+                    return indiUpdate();
+            }
+        }
+    }
+}

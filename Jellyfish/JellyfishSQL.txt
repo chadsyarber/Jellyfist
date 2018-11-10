@@ -1,0 +1,237 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using MySql.Data.Entity;
+using MySql.Data.MySqlClient;
+using System.Windows.Forms;
+
+namespace StatusTool
+{
+    class Jellies
+    {
+        /*
+         * This class will interface with the SQL database for the Major Incident Portal
+         * need something to protect db
+         * new table for new inc
+         * */
+        private StatusJelly update;
+        private string connection = @"Server=10.80.192.48;datasource=localhost;port=3306;Database='major_incident_portal';username=root;password=root;";
+        private string command { get; set; }
+
+        public Jellies(StatusJelly update)
+        {
+            this.update = update;
+        }
+        public Jellies()
+        { }
+        private List<string> checkTables()
+        {
+            MySqlConnection conn = new MySqlConnection();
+            MySqlCommand cmd = new MySqlCommand();
+            MySqlDataReader reader;
+
+            conn.ConnectionString = connection;
+
+            List<string> incidents = new List<string>();
+
+            try
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.CommandText = @"Select * from list_jelly_inc";
+                reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    incidents.Add(reader.GetString("incident_num"));
+                }
+                conn.Close();
+                cmd.Dispose();
+            }
+            catch (MySqlException e)
+            {
+                MessageBox.Show(e.Number + " Type error: Check Tables\n" + e.Message);
+            }
+            conn.Close();
+            cmd.Dispose();
+            return incidents;
+        }
+        public void createJelly(string incident)
+        {
+            MySqlConnection conn = new MySqlConnection();
+            MySqlCommand cmd = new MySqlCommand();
+            //int ele = 0;
+            conn.ConnectionString = connection;
+
+            List<string> jellyINC = checkTables();//set with the incident numbers
+            if (jellyINC.Count() != 0)
+            {
+                if (jellyINC.Contains(incident))//Existing Incident
+                {
+                    try
+                    {
+                        conn.Open();
+                        cmd.Connection = conn;
+                        cmd.CommandText = @"INSERT INTO " + incident + " VALUES(NULL, @campfire_room, @major_highvis, @status, @impact, @engaged, @streams, @steps, @incident_num)";
+                        cmd.Prepare();
+                        cmd.Parameters.AddWithValue("@campfire_room", update.getRoomName());
+                        cmd.Parameters.AddWithValue("@major_highvis", update.getMajorHighVis());
+                        cmd.Parameters.AddWithValue("@status", update.getStatus());
+                        cmd.Parameters.AddWithValue("@impact", update.getImpact());
+                        cmd.Parameters.AddWithValue("@engaged", update.getEngaged());
+                        cmd.Parameters.AddWithValue("@streams", update.getStreams());
+                        cmd.Parameters.AddWithValue("@steps", update.getSteps());
+                        cmd.Parameters.AddWithValue("@incident_num", update.getIncident());
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+                        conn.Close();
+                    }
+                    catch (MySqlException e)
+                    {
+                        MessageBox.Show(e.Number + " Type Error: Create Jelly Existing\n" + e.Message);
+                    }
+                    cmd.Dispose();
+                    conn.Close();
+                }
+                else//New incident
+                {
+                    try
+                    {
+                        conn.Open();
+                        cmd.Connection = conn;
+                        cmd.CommandText = @"CREATE TABLE " + incident + " LIKE jelly_status";
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+                        cmd.Connection = conn;
+                        cmd.CommandText = @"INSERT INTO " + incident + " VALUES(NULL, @campfire_room, @major_highvis, @status, @impact, @engaged, @streams, @steps, @incident_num)";
+                        cmd.Prepare();
+                        cmd.Parameters.AddWithValue("@campfire_room", update.getRoomName());
+                        cmd.Parameters.AddWithValue("@major_highvis", update.getMajorHighVis());
+                        cmd.Parameters.AddWithValue("@status", update.getStatus());
+                        cmd.Parameters.AddWithValue("@impact", update.getImpact());
+                        cmd.Parameters.AddWithValue("@engaged", update.getEngaged());
+                        cmd.Parameters.AddWithValue("@streams", update.getStreams());
+                        cmd.Parameters.AddWithValue("@steps", update.getSteps());
+                        cmd.Parameters.AddWithValue("@incident_num", update.getIncident());
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+                        cmd.Connection = conn;
+                        cmd.CommandText = @"INSERT INTO list_jelly_inc VALUES(NULL, @incident)";
+                        cmd.Prepare();
+                        cmd.Parameters.AddWithValue("@incident", incident);
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+                        conn.Close();
+                    }
+                    catch (MySqlException e)
+                    {
+                        MessageBox.Show(e.Number + " Type error: createJelly New Incident\n" + e.Message);
+                    }
+                    cmd.Dispose();
+                    conn.Close();
+                }
+            }
+            else//initial
+            {
+                try
+                {
+                    conn.Open();
+                    cmd.Connection = conn;
+                    cmd.CommandText = @"CREATE TABLE " + incident + @" LIKE jelly_status";
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                    cmd.Connection = conn;
+                    cmd.CommandText = @"INSERT INTO " + incident + @" VALUES(NULL, @campfire_room, @major_highvis, @status, @impact, @engaged, @streams, @steps, @incident_num)";
+                    cmd.Prepare();
+                    cmd.Parameters.AddWithValue("@inc", incident);
+                    cmd.Parameters.AddWithValue("@campfire_room", update.getRoomName());
+                    cmd.Parameters.AddWithValue("@major_highvis", update.getMajorHighVis());
+                    cmd.Parameters.AddWithValue("@status", update.getStatus());
+                    cmd.Parameters.AddWithValue("@impact", update.getImpact());
+                    cmd.Parameters.AddWithValue("@engaged", update.getEngaged());
+                    cmd.Parameters.AddWithValue("@streams", update.getStreams());
+                    cmd.Parameters.AddWithValue("@steps", update.getSteps());
+                    cmd.Parameters.AddWithValue("@incident_num", update.getIncident());
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                    cmd.CommandText = @"INSERT INTO list_jelly_inc VALUES(NULL, @incident)";
+                    cmd.Prepare();
+                    cmd.Parameters.AddWithValue("@incident", incident);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                    conn.Close();
+                }
+                catch (MySqlException e)
+                {
+                    MessageBox.Show(e.Number + " Type error: create Jelly initial\n" + e.Message);
+                }
+                cmd.Dispose();
+                conn.Close();
+            }
+        }
+        private List<string> getINC()
+        {
+            MySqlConnection conn = new MySqlConnection();
+            MySqlCommand cmd = new MySqlCommand();
+            MySqlDataReader reader;
+
+            conn.ConnectionString = connection;
+            List<string> inci = new List<string>();
+
+            try
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.CommandText = @"SELECT * FROM list_jelly_inc";
+                reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    inci.Add(reader.GetString("incident_num"));
+                }
+                reader.Close();
+            }
+            catch (MySqlException e)
+            {
+                MessageBox.Show(e.Number + " Type error: GetINC\n" + e.Message);
+            }
+            cmd.Dispose();
+            conn.Close();
+            return inci;
+        }
+        public List<StatusJelly> getJellies()
+        {
+            MySqlConnection conn = new MySqlConnection();
+            MySqlCommand cmd = new MySqlCommand();
+            MySqlDataReader reader;
+
+            conn.ConnectionString = connection;
+            List<StatusJelly> jellies = new List<StatusJelly>();
+
+            try
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                for (int i = 0; i < getINC().Count(); i++)
+                {
+                    cmd.CommandText = @"SELECT * FROM " + getINC().ElementAt(i);
+                    reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        jellies.Add(new StatusJelly(reader.GetInt32("jelly_id"), reader.GetString("campfire_room"), reader.GetInt32("major_highvis"), reader.GetString("status"), reader.GetString("impact"), reader.GetString("engaged"), reader.GetString("streams"), reader.GetString("steps"), reader.GetString("incident_num")));
+                    }
+                    reader.Close();
+                }
+            }
+            catch (MySqlException e)
+            {
+                MessageBox.Show(e.Number + " Type Error: GetJellies\n" + e.Message);
+            }
+            cmd.Dispose();
+            conn.Close();
+            return jellies;
+        }
+        
+    }
+}

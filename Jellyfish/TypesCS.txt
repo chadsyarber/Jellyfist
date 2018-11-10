@@ -1,0 +1,38 @@
+﻿using System;
+
+public enum fullUpdateType
+{
+    NONE,
+    STATUS,
+    WORKSTREAMS,
+    BOTH
+};
+public enum location
+{
+    NONE = 0,
+    CUR_STATUS = 1,
+    BUS_IMPACT = 2,
+    TECH_IMPACT = 3,
+    ACTIVE_STREAMS = 4,
+    INACTIVE_STREAMS = 5,
+    SAND_BOX = 6,
+    INC_TITLE = 7
+};
+public enum roles
+{
+    CORDINATOR = 1,
+    ESCALATOR = 2,
+    COMMUNICATOR = 3,
+    DTOC_SAM = 4
+};
+public enum isResolved
+{
+    RESOLVED,
+    FINAL,
+    STATUS
+};
+public enum jellyOrRoles
+{
+    JELLY,
+    ROLES
+};

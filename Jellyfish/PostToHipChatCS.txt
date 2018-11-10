@@ -1,0 +1,117 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Web;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json.Linq;
+
+
+namespace Jellyfish5._1
+{
+    class PostToHipChat
+    {
+        /*
+         * static strings
+         * */
+        private static string TOKEN = "{TOKEN}";
+        private static string URL = "{HCURL}";
+        private static string ROOMS = "{ROOM}";
+        private static string mURL = "{URL}";
+        private static string notURL = "{NOTURL}";
+        private static string getRoomURL = URL + ROOMS + TOKEN;
+
+        private jellyOrRoles jr;        
+        private JellyfishStatusUpdate jelly;
+        private Roles roles;
+        private JObject jo;
+        
+        private string roomID;   
+        private List<string> roomNames;
+        private List<string> ids;        
+
+        public PostToHipChat() 
+        {//Used for only getrooms
+            roomNames = new List<string>();
+            getRooms();
+        }        
+        public PostToHipChat(Roles roles)
+        {
+            this.roles = roles;
+            jr = jellyOrRoles.ROLES;
+            getRooms();
+        }
+        
+        public Roles Roles
+        {
+            get { return roles; }
+            set { roles = value; }
+        }
+        public jellyOrRoles JR
+        {
+            get { return jr; }
+            set { jr = value; }
+        }
+
+        public string RoomID
+        {
+            get { return roomID; }
+            set { roomID = value; }
+        }
+        public void setRID(string roomName)
+        {
+            int theId = RoomName.FindIndex(a => a.Contains(roomName));
+            RoomID = IDS.ElementAt(theId);
+        }
+        /*
+         * Call in Form
+         * Add in items for comboBox
+         * should be usuable to call again to refresh rooms
+         * */
+        private void getRooms()
+        {
+            HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create(getRoomURL);
+            req.Method = "GET";
+            string rtn = String.Empty;
+            using (HttpWebResponse res = (HttpWebResponse)req.GetResponse())
+            {
+                Stream data = res.GetResponseStream();
+                StreamReader read = new StreamReader(data);
+                rtn = read.ReadToEnd();
+                jo = JObject.Parse(rtn);
+                data.Close();
+                read.Close();
+            }
+            roomNames = new List<string>();
+            ids = new List<string>();
+            foreach (var words in jo["items"])
+            {
+                roomNames.Add(words["name"].ToString());
+                ids.Add(words["id"].ToString());
+            }          
+        }
+        public List<string> RoomName
+        {
+            get
+            {
+                return roomNames;
+            }
+        }
+        public List<string> IDS
+        {
+            get
+            {
+                return ids;
+            }
+        }
+        
+        public string postURL()
+        {
+            return URL + mURL + RoomID + notURL + TOKEN;
+        }
+          
+    }
+}
